@@ -1,10 +1,92 @@
-<amplify-authenticator>
-  <ng-template
-    amplifySlot="authenticated"
-    let-user="user"
-    let-signOut="signOut"
+<div class="auth-container">
+  <amplify-authenticator
+    [socialProviders]="['amazon', 'apple', 'facebook', 'google']"
+    [signUpAttributes]="['name']"
   >
-    <app-todos></app-todos>
-    <button (click)="signOut()">Sign Out</button>
-  </ng-template>
-</amplify-authenticator>
+    <ng-template amplifySlot="header">
+      <div style="padding: var(--amplify-space-large); text-align: center">
+        <img
+          class="amplify-image"
+          alt="Amplify logo"
+          src="https://test.cas.varsity.com/includes/skins/ybPortal/assets/images/VY_logo.png"
+        />
+        <!-- src="https://docs.amplify.aws/assets/logo-dark.svg" -->
+      </div>
+    </ng-template>
+
+    <ng-template amplifySlot="sign-in-header">
+      <h3
+        class="amplify-heading"
+        style="padding: var(--amplify-space-xl) 0 0 var(--amplify-space-xl)"
+      >
+        Sign in to your account
+      </h3>
+    </ng-template>
+
+    <ng-template amplifySlot="sign-in-footer">
+      <div style="text-align: center">
+        <button
+          (click)="authenticator.toForgotPassword()"
+          class="amplify-button amplify-field-group__control"
+          data-fullwidth="false"
+          data-size="small"
+          data-variation="link"
+          type="button"
+          style="font-weight: normal"
+        >
+          Reset Password
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-template amplifySlot="sign-up-header">
+      <h3
+        class="amplify-heading"
+        style="padding: var(--amplify-space-xl) 0 0 var(--amplify-space-xl)"
+      >
+        Create a new account
+      </h3>
+    </ng-template>
+
+    <ng-template amplifySlot="sign-up-footer">
+      <div style="text-align: center">
+        <button
+          (click)="authenticator.toSignIn()"
+          class="amplify-button amplify-field-group__control"
+          data-fullwidth="false"
+          data-size="small"
+          data-variation="link"
+          type="button"
+          style="font-weight: normal"
+        >
+          Back to Sign In
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-template amplifySlot="footer">
+      <div style="padding: var(--amplify-space-large); text-align: center">
+        <p class="amplify-text" style="color: var(--amplify-colors-neutral-80)">
+          © All Rights Reserved
+        </p>
+      </div>
+    </ng-template>
+
+    <ng-template
+      amplifySlot="authenticated"
+      let-user="user"
+      let-signOut="signOut"
+    >
+      <app-todos></app-todos>
+      <button (click)="signOut()">Sign Out</button>
+    </ng-template>
+  </amplify-authenticator>
+  <div class="footer-text">
+    <p>Some Author, Some School</p>
+    <p>SomeCity, State</p>
+    <p>
+      If want to submit images do so here:
+      <a href="http://SomeWebsite.com/subtmi">http://SomeWebsite.com/subtmi</a>
+    </p>
+  </div>
+</div>

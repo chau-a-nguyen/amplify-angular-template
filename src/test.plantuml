@@ -1,0 +1,50 @@
+@startuml
+
+actor User as U
+participant "Client App (SPA)" as CA
+participant "Custom Auth Server" as CH
+participant "Amazon Cognito" as Cog
+
+== Initial Access & Auth Check ==
+U -> CA: Access protected page/route
+CA -> CA: Check local tokens/session
+note right: If NO valid session/tokens
+CA -> CH: Redirect to /login
+
+== Login (Custom Hosted Auth) ==
+CH -> U: Show custom login form
+U -> CH: Submit credentials (username/password)
+CH -> CH: Generate PKCE code_challenge
+CH -> Cog: Redirect to /authorize with PKCE params
+
+== Cognito Authorization ==
+Cog -> Cog: Validate credentials/MFA <br/> Issue auth code
+Cog -> CH: Redirect back to /callback?code=XXX
+
+== Callback & Token Exchange ==
+CH -> Cog: POST /token with auth code + code_verifier
+Cog --> CH: Returns ID/Access tokens
+CH -> CH: Create server session / SSO cookie
+CH -> U: Redirect back to Client App with success
+
+== Client App Post-Login ==
+U -> CA: Load protected page again
+CA -> CA: Detect valid session/cookie (SSO)
+CA -> U: Display protected content
+
+== Global SSO Across Multiple Apps ==
+U -> (Another Client App): Access another protected route
+(Another Client App) -> (Another Client App): Check session/cookie
+note right: Already logged in via shared SSO cookie
+(Another Client App) -> U: Allow access without re-login
+
+== Logout ==
+U -> CA: Click "Logout"
+CA -> CH: Call /logout endpoint
+CH -> Cog: (Optional) Global sign-out / revoke tokens
+CH -> CH: Invalidate session, clear SSO cookie
+CH -> CA: Redirect or return logout success
+CA -> CA: Clear local state/tokens
+CA -> U: Show logged-out UI
+
+@enduml
